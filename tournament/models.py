@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.db import models
 from datetime import datetime
 # Create your models here.
@@ -29,3 +28,12 @@ class Tournament(models.Model):
     tournament_type = models.CharField(max_length=50, choices=Tournament_Type, default="private")
     match_type = models.CharField(max_length=50, choices=Match_Type, default="men's single")
     
+# class tournament_profile_rel(models.Model):
+#     Request_Accepted =(
+#     ("accepted" , "Accepted"),
+#     ("not accepted" , "Not Accepted"),
+#     )
+#     profile = models.ForeignKey("user_info.User", on_delete=models.CASCADE)
+#     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+#     # user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+#     is_accepted = models.CharField(max_length=50, choices=Request_Accepted, default="accepted")
