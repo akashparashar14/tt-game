@@ -2,9 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
-from .serializer import UserSerializer
+from .serializer import UserSerializer, UpdateUserSerializer
 from .models import CustomUser
-import jwt
+from rest_framework import generics
 
 
 # Create your views here.
@@ -14,14 +14,15 @@ class RegisterView(APIView):
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        response = {
+        if serializer.is_valid():
+            serializer.save()
+            response = {
             'success': 'true',
-            'message': 'User profile fetched successfully',
+            'message': 'User profile created successfully',
             }
         
-        return Response(response)
+            return Response(response)
+        return Response(serializer.errors)
 
 
 class ProfileView(APIView):
@@ -30,42 +31,27 @@ class ProfileView(APIView):
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated,)
 
+    
     def get(self, request):
         try:
-            print(request.user)
             user_profile = CustomUser.objects.get(id=request.user.id)
+            # print(user_profile.age)
+            Serializer = UserSerializer(user_profile, many=False)
             response = {
                 'success': 'True',
                 'message': 'User profile fetched successfully',
-                'data': [{
-                    'first_name': user_profile.first_name,
-                    'last_name': user_profile.last_name,
-                    'phone_number': user_profile.phone_number,
-                    'age': user_profile.age,
-                    'gender': user_profile.gender,
-                }]
+                'data': Serializer.data  
             }
 
         except Exception as e:
             response = {
-            'success' : 'True',
+            'success' : 'False',
             'message': 'User registered  successfully',
             }
         return Response(response)
 
-# class ProfileView(APIView):
+class UpdateProfileView(generics.UpdateAPIView):
 
-#     def get(self, request):
-#         token = request.COOKIES.get('jwt')
-
-#         if not token:
-#             raise AuthenticationFailed('Unauthenticated!')
-
-#         try:
-#             payload = jwt.decode(token, 'secret', algorithm=['HS256'])
-#         except jwt.ExpiredSignatureError:
-#             raise AuthenticationFailed('Unauthenticated!')
-
-#         user = CustomUser.objects.filter(id=payload['id']).first()
-#         serializer = UserSerializer(user)
-#         return Response(serializer.data)
+    queryset = CustomUser.objects.all()
+    permission_classes = (AllowAny,)
+    serializer_class = UpdateUserSerializer     

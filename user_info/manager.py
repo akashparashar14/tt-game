@@ -24,3 +24,4 @@ class UserManager(BaseUserManager):
             raise ValueError(('Super user must in staff'))
 
         return self.create_user(email, password, **extra_fields)
+
