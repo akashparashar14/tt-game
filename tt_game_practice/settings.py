@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gdy&=#a2wd6d%c835hdq)_g&*+!54%m@6sh+lex_)+t4j(nm!^'
+SECRET_KEY = 'django-insecure-3l))_17t==9mwt)2akw2b4#r8t5=ud@(^cp*6n@46aq_3d#kgf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,11 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'user_info',
     'fixtures',
     'tournament',
-    'user_info',
-    
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -79,7 +78,6 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'tt_game_practice.wsgi.application'
 
 
@@ -89,14 +87,13 @@ WSGI_APPLICATION = 'tt_game_practice.wsgi.application'
 DATABASES = {   
     'default': {   
         'ENGINE': 'django.db.backends.mysql',   
-        'NAME': 'table',   
+        'NAME': 'tt',   
         'USER': 'root',   
         'PASSWORD': 'ramsevake',   
         'HOST': 'localhost',   
         'PORT': '3306',    
-    }   
+    }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
