@@ -1,7 +1,10 @@
 from django.contrib import admin
-from .models import CustomUser, tournament_profile_rel
+from .models import CustomUser
 # Register your models here.
 
+@admin.register(CustomUser)
+class CustomUserAdmin(admin.ModelAdmin):
+    list_display = ('username','email','tournament_won','age')
 
-admin.site.register(CustomUser)
-admin.site.register(tournament_profile_rel)
+
+

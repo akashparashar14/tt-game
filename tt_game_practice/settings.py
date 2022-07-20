@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
+from decouple import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3l))_17t==9mwt)2akw2b4#r8t5=ud@(^cp*6n@46aq_3d#kgf'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user_info',
-    'fixtures',
+'fixtures',
     'tournament',
     'rest_framework',
 ]
@@ -61,6 +64,12 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = 'user_info.CustomUser'
 ROOT_URLCONF = 'tt_game_practice.urls'
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME' : timedelta(days=2),
+    'JWT_ALLOW_REFRESH' : True,
+    'REFRESH_TOKEN_LIFETIME' : timedelta(days=7)
+}
 
 TEMPLATES = [
     {
@@ -89,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',   
         'NAME': 'tt',   
         'USER': 'root',   
-        'PASSWORD': 'ramsevake',   
+        'PASSWORD': config('PASSWORD'),   
         'HOST': 'localhost',   
         'PORT': '3306',    
     }

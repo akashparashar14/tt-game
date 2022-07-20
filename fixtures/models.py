@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here 
 
 class Fixtures(models.Model):
@@ -8,7 +9,6 @@ class Fixtures(models.Model):
     ('round_2','SemiFinal'),
     ('round_3','Final')
 ) 
-
     match_date = models.DateTimeField()
     match_round =  models.CharField(max_length=50, choices=Level, default="round_1")
     player_id_home = models.CharField(max_length=200)

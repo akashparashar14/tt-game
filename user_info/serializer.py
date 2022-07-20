@@ -1,51 +1,65 @@
 from rest_framework import serializers
 from .models import CustomUser
-from django.contrib.auth import authenticate
-from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 
-
 class RegisterSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = CustomUser
         fields = '__all__'
 
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
-
-
-        def create(self, validated_data):
-            profile_data = validated_data.pop('profile')
-            user = CustomUser.objects.create_user(**validated_data)
-            CustomUser.objects.create(
-                user=user,
-                first_name=profile_data['first_name'],
-                last_name=profile_data['last_name'],
-                age=profile_data['age'],
-                gender=profile_data['gender']
-        )
-            return user
-
-        
+    def create(self, validated_data):
+        print(validated_data)
+        validated_data ['password'] = make_password(validated_data ['password'])
+        user = CustomUser.objects.create(**validated_data)
+        return user
 
         
 class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = '__all__'
-
+        fields = ('gender','age','username','first_name','last_name','email')
+    
     def create(self, validated_data):
+        print(validated_data)
         validated_data ['password'] = make_password(validated_data ['password'])
         user = CustomUser.objects.create(**validated_data)
         return user
-
-
 
 class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('gender','age','username',)
+        fields = ('gender','age','username','first_name','last_name',)
+
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True)
+    # password2 = serializers.CharField(write_only=True, required=True)
+    old_password = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ('old_password', 'password', 'password2')
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+
+        return attrs
+
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError({"old_password": "Old password is not correct"})
+        return value
+
+    def update(self, instance, validated_data):
+
+        instance.set_password(validated_data['password'])
+        instance.save()
+
+        return instance
+
+
+
