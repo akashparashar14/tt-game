@@ -1,7 +1,3 @@
-from tkinter import E
-from urllib import request, response
-from django.dispatch import receiver
-from django.shortcuts import render
 from rest_framework.views import APIView
 from django.views.generic.edit import CreateView
 from rest_framework.response import Response
@@ -11,8 +7,8 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Tournament, tournament_profile_rel, Invitation
 from user_info.models import CustomUser
 from rest_framework.permissions import AllowAny
-from .serializer import TournamentSerializer, InvitationSerializer, TournamentViewSerializer
-# from django.views.decorators.csrf import csrf_exempt
+from rest_framework import generics
+from .serializer import TournamentSerializer, InvitationSerializer, TournamentViewSerializer, UpdateTournamentSerializer
 
 # Create your views here.
 
@@ -55,58 +51,50 @@ class TournamentView(APIView):
 class InvitationView(APIView):
     def post(self, request, *args, **kwargs):
         from_user = request.user
-        to_user = CustomUser.objects.get(pk=request.data)
-        tournament_request = Invitation.objects.get(from_user=from_user, to_user = to_user)
+        to_user = request.data['user_id']
+        Invitation(from_user=from_user, to_user_id=to_user, tournament_id_id = request.data['tournament_id']).save()
+
         response ={
             'sucess' : 'True',
             'message' : 'Request Sent Sucessfully'
         }
         return Response(response, status=status.HTTP_201_CREATED)
     
-    # def 
-
-
-        # try:
-        #     # tournament_request =Invitation.objects.filter(sender=request.user_id, receiver=receiver)
-        #     # print(user_profile.age)
-        #     Serializer = InvitationSerializer(tournament_request, many=False)
-        #     try:
-        #         for i in tournament_request:
-        #             if i.is_active:
-        #                 raise Exception("You already sent them a request")
-        #         tournament_request = Invitation.objects.filter(sender=user, receiver=receiver)
-        #         tournament_request.save()
-        #         return Response("Tournament Request Sent")
-
-        #     except Exception as e:
-        #         return Response(str(e))
-        # except tournament_request.DoesNotExit:
-        #     tournament_request =Invitation.objects.filter(sender=user, receiver=receiver)
-        #     tournament_request.save()
-            # return Response("Send Tournament_request")
-        
-        
-
-# @csrf_exempt
-# class TournamentInviteView(CreateView):
     
-#     serializer_class = TournamentInviteSerializer
-#     permission_classes = (AllowAny,)
-
-
-#     def post(self, request):  
-
-#         data = {
-#             'status':request.data.get('status'),
-#             'tournament_id' : request.data.get('tournament_id'),
-#         }
-#         serializer =TournamentInviteSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             response = {
-#             'success': 'true',
-#             'message': 'User Register Successfully',
-#             }
+class InvitationStatusView(APIView):    
+    def post(self, request):
+        invitation_request = Invitation.objects.get(id=request.data['id'])
+        print(invitation_request.to_user)
         
-#             return Response(response , status=status.HTTP_200_OK)
-#         return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+        if invitation_request:
+            response ={
+            'sucess' : 'True',
+            'message' : 'Request Accepted Sucessfully'
+        }
+            return Response(response, status=status.HTTP_201_CREATED)
+        else:
+            response ={
+            'sucess' : 'False',
+            'message' : 'Request Denied Sucessfully'
+        }
+            return Response(response, status=status.HTTP_200_OK)
+        # if invitation_request.to_user == request.user:
+        #     if invitation_request.is_accepted == True:
+        #         return Response("You are in tournament")
+        #     elif invitation_request.not_accepted == True:
+        #         return Response("You denied for tournament")
+        #     else:
+        #         return Response("Pending")
+
+class UpdateTournamentView(generics.UpdateAPIView):
+
+    queryset = CustomUser.objects.all()
+    permission_classes = (IsAuthenticated ,)
+    serializer_class = UpdateTournamentSerializer 
+    
+class DeleteTournament(APIView):
+    def delete(self,request,pk=None,format=None):
+        id = pk
+        stu = Tournament.objects.get(pk=id)
+        stu.delete()
+        return Response({'mssg':'Data Deleted Succesfully'}, status = status.HTTP_204_NO_CONTENT)

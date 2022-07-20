@@ -10,8 +10,13 @@ class FixtureAdmin(admin.ModelAdmin):
 class TournamentRelationAdmin(admin.ModelAdmin):
     list_display = ('profile','tournament')
                                            
-# @admin.register(Invitation)
-# class InviteAdmin(admin.ModelAdmin):
-#     list_display = ('tournament_id','status')
+@admin.register(Invitation)
+class InviteAdmin(admin.ModelAdmin):
+    list_display = ('tournament_id','status','from_user','to_user')
 
     
+
+# class PersonDetailAdmin(admin.ModelAdmin):
+#     formfield_overrides = {
+#         models.DateTimeField: {'input_formats': ('%m/%d/%Y',)},
+#     }

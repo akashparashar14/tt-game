@@ -57,6 +57,5 @@ class Invitation(models.Model):
 
     status = models.CharField(max_length=20, choices=InviteStatus, default= 2)
     tournament_id = models.ForeignKey(Tournament, related_name="Invitation", on_delete=models.CASCADE, default=None)
-    user_id = models.ForeignKey(CustomUser, related_name="User", on_delete=models.CASCADE, default=None)
     from_user = models.ForeignKey(CustomUser, related_name="Form_User",on_delete=models.CASCADE, default=None)
     to_user = models.ForeignKey(CustomUser, related_name="To_User",on_delete=models.CASCADE, default=None)

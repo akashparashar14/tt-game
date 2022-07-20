@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user_info',
-'fixtures',
+    'fixtures',
     'tournament',
     'rest_framework',
 ]
@@ -60,16 +60,17 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
 }
-
-AUTH_USER_MODEL = 'user_info.CustomUser'
-ROOT_URLCONF = 'tt_game_practice.urls'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME' : timedelta(days=2),
     'JWT_ALLOW_REFRESH' : True,
     'REFRESH_TOKEN_LIFETIME' : timedelta(days=7)
 }
+
+AUTH_USER_MODEL = 'user_info.CustomUser'
+ROOT_URLCONF = 'tt_game_practice.urls'
 
 TEMPLATES = [
     {

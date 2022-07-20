@@ -22,7 +22,14 @@ class TournamentViewSerializer(serializers.ModelSerializer):
 class InvitationSerializer(serializers.ModelSerializer):
     class Meta:
         models = Invitation
-        fields = ('user_id','tournament_id','status',)
+        fields = ('from_user','to_user','tournament_id','status',)
 
         def create(self, validated_data):
             return Invitation.objects.create(**validated_data)
+
+class UpdateTournamentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Tournament
+        fields = ('tournament_name','start_date_of_reg','last_date_of_reg','tournament_start_date','tournament_end_date'
+                    ,'match_type','tournament_type')
